@@ -52,7 +52,7 @@ function lookupDocs() {
     var lonWidth = google.maps.geometry.spherical.computeDistanceBetween(ne, nw)
     radius = parseInt(lonWidth / 2 / 1000) + "km";
 
-    url = "http://api.dp.la/v2/items?sourceResource.spatial.distance=" + radius + "&page_size=500&sourceResource.spatial.coordinates=" + lat + "," + lon +"&api_key=" + API_KEY;
+    url = "http://api.dp.la/v2/items?api_key=9c3ed1019b32c21cbfb3a70394cb8980&dataProvider=%22National%20Museum%20of%20American%20History%22&sourceResource=%22image%22&fields=sourceResource.title,sourceResource.date.displayDate,sourceResource.spatial.coordinates,sourceResource.description&sourceResource.spatial.country="United+States"&page_size=500&callback=myFunc";
     console.log("fetching results from dpla: " + url);
     $.ajax({url: url, dataType: "jsonp", success: displayDocs});
 }
@@ -74,7 +74,7 @@ function displayDocs(data) {
 
 function displayDoc(index, doc) {
     count += 1;
-    var loc; 
+    var loc;
     $(doc.sourceResource.spatial).each(function(i,coord) {
 	var coords = coord.coordinates;
         // TODO: We use the first set of coords we find, but it may not be the best
@@ -116,7 +116,7 @@ function displayDoc(index, doc) {
 	    var recordUrl = recordId.replace('http://dp.la/api/items','http://dp.la/item');
             var viewUrl = doc.isShownAt
 
-            // add a info window to the marker so that it displays when 
+            // add a info window to the marker so that it displays when
             // someone clicks on the marker
             var item = '<a target="_new" href="' + recordUrl + '">' + title + '</a>' + date;
             provider = '<a target="_new" href="' + viewUrl + '">' + provider + '</a>.';
