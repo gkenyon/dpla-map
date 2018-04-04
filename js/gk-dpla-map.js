@@ -3,13 +3,6 @@ var map;
 var oms;
 var count = 0;
 
-function main() {
-    if (Modernizr.geolocation) {
-        navigator.geolocation.getCurrentPosition(makeMap);
-    } else {
-        displayError();
-    }
-}
 
 function makeMap(position) {
     var lat = parseFloat(position.coords.latitude);
@@ -41,9 +34,25 @@ function makeMap(position) {
 }
 
 function lookupDocs() {
-    $.ajax({url: url, dataType: "jsonp", success: displayDocs});
-}
-
+    $.ajax({
+        type: "GET",
+        url: "http://api.dp.la/v2/items?api_key=9c3ed1019b32c21cbfb3a70394cb8980&dataProvider=%22National%20Museum%20of%20American%20History%22&sourceResource=%22image%22&fields=sourceResource.title,sourceResource.date.displayDate,sourceResource.spatial.coordinates,sourceResource.description&page_size=500&callback=myFunc",
+        contentType: "application/json",
+        dataType: "jsonp",
+        data: JSON.stringify({
+            sourceResource.description: $("#description").val(),
+            sourceResource.title: $("#title").val(),
+            sourceResource.date.displayDate: $("#date").val(),
+            sourceResource.spatial.coordinates: $("#spatial.coordinates").val(),
+        }),
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(response) {
+            console.log(response);
+        }
+});
+    
 function clearMarkers() {
     var markers = oms.getMarkers();
     for (var i=0; i < markers.length; i++) {
@@ -75,7 +84,7 @@ function displayDoc(index, doc) {
 
     // create a marker for the subject
     if (loc) {
-	    var source = doc.sourceResource;
+	    
 	    var title = source.title;
 	    var description = '';
 	    if ('description' in source) {
@@ -97,11 +106,6 @@ function displayDoc(index, doc) {
                 position: loc,
 		title: title + ' -- ' + provider + date
             });
-
-            var recordId = doc['@id'];
-	    // No link to the record included.  What a pain in the butt! Make our own
-	    var recordUrl = recordId.replace('http://dp.la/api/items','http://dp.la/item');
-            var viewUrl = doc.isShownAt
 
             // add a info window to the marker so that it displays when
             // someone clicks on the marker
